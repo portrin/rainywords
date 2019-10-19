@@ -47,6 +47,8 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                print(event.key)
         player.move()
         redrawWindow(win, player)
 

@@ -11,7 +11,7 @@ class Word():
     def clear_words(self):
         pass
 
-    def string_compare(self, str="", word):
+    def string_compare(self, str, word):
         return str == self.word
 
     def word_to_string(self):
@@ -27,3 +27,20 @@ class WordLibrary():
         except random.error as error:
             print(str(error))
         return word
+
+class CurrentWordList():
+    def __init__(self, wordList=[]):
+        self.current_word_list = wordList
+
+    def word_to_string_list(self):
+        string_list = []
+        for x in self.current_word_list:
+            string_list.append(x.word_to_string())
+        return string_list
+
+    def remove(self, word):
+        for x in self.current_word_list:
+            if x.word == word:
+                x.clear_words()
+                self.current_word_list.remove(x)
+        return

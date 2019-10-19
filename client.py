@@ -1,11 +1,12 @@
 import pygame
 from os import path
-from word import Word, WordLibrary
+from word import Word, WordLibrary, CurrentWordList
 
 width = 1200
 height = 800
 BACKSPACE = 8
 RETURN = 13
+SPACE = 32
 
 # test words
 words = ["hello", "int", "hi", "good", "read", "apple", "thanks", "tree", "sun", "moon"]
@@ -20,8 +21,7 @@ title = pygame.image.load("src/rainywords.png").convert_alpha()
 class Player():
     def __init__(self, words, score):
         #track current words on screen.
-        self.current_word_as_string_list = []
-        self.current_word_list = []
+        self.current_word_list = CurrentWordList([Word("hi",1200,800)])
         #words list that can be generated.
         self.words_library = WordLibrary(words)
         #track users scores
@@ -64,16 +64,19 @@ def main():
                 #player press return to submit word
                 if event.key == RETURN:
                     #if what player types match
-                    if player.pressed_word in [for a in player.current_word_list]:
-                        #clear correct word from the screen
-                        player.current_word_list[player.current_word_list.index(player.pressed_word)].clear_words()
-                        #remove correct word from the list
+                    if player.pressed_word in player.current_word_list.word_to_string_list():
+                        #remove correct word from the list and clear word from screen
                         player.current_word_list.remove(player.pressed_word)
-                        player.score += player.pressed_word.length()
+                        player.score += len(player.pressed_word)
+                        player.pressed_word = ""
                         print(player.score)
-                        
-
-                player.pressed_word += pygame.key.name(event.key)
+                elif event.key == BACKSPACE:
+                    #player press backspace
+                    player.pressed_word = player.pressed_word[:-1]
+                elif event.key == SPACE:
+                    pass
+                else:
+                    player.pressed_word += pygame.key.name(event.key)
                 print(player.pressed_word)
             
         redrawWindow(win)
