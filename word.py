@@ -1,12 +1,12 @@
 import random
 
 class Word():
-    def __init__(self, word, resolution=(1200, 800)):
+    def __init__(self, word, vel, resolution=(1200, 800)):
         # collection of random words from server to client
         self.word = word
         self.x = random.randint(100, resolution[1] - 100)
         self.y = 0
-        self.vel = 10
+        self.vel = vel
     
     def clear_words(self):
         pass
@@ -19,13 +19,17 @@ class Word():
 
     def update_falling(self):
         self.y += self.vel
+    
+    def increase_vel(self):
+        self.vel += 1
 
 class WordLibrary():
-    def __init__(self, words, resolution=(1200,800)):
+    def __init__(self, words, resolution=(1200,800), vel = 5):
         self.word_library = words # words come from .csv file that was loaded in client.py
+        self.vel = vel
 
     def generate_words(self):
-        word = Word(random.choice(self.word_library), resolution=(1200,800))
+        word = Word(random.choice(self.word_library), self.vel, resolution=(1200,800))
         return word
 
 class CurrentWordList():
