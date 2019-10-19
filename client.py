@@ -11,7 +11,7 @@ TIMER = 20
 TIMER_GEN_WORD = 21
 
 # test words
-words = ["hello", "int", "hi", "good", "read", "apple", "thanks", "tree", "sun", "moon"]
+words = ["hello", "int", "hi", "good", "read", "apple", "thanks", "tree", "sun", "moon", "nat"]
 
 font = pygame.font.get_default_font()
 
