@@ -7,6 +7,8 @@ height = 800
 BACKSPACE = 8
 RETURN = 13
 SPACE = 32
+TIMER = 20
+TIMER_GEN_WORD = 21
 
 # test words
 words = ["hello", "int", "hi", "good", "read", "apple", "thanks", "tree", "sun", "moon"]
@@ -21,16 +23,11 @@ title = pygame.image.load("src/rainywords.png").convert_alpha()
 class Player():
     def __init__(self, words, score):
         #track current words on screen.
-        self.current_word_list = CurrentWordList([Word("hi",1200,800)])
-        #words list that can be generated.
-        self.words_library = WordLibrary(words)
+        self.current_word_list = CurrentWordList()
         #track users scores
         self.score = 0
         #current word that typing
         self.pressed_word = ""
-
-
-
 
 
 
@@ -53,13 +50,28 @@ def menu():
 
 def main():
     run = True
-    menu()
+    #menu()
+
+    #GAME SETUP
+    #clock = pygame.time.Clock()
     player = Player(words, score=0)
+    #words list that can be generated.
+    words_library = WordLibrary(words)
+    #timer for generate word
+    pygame.time.set_timer(TIMER_GEN_WORD, 2500)
+
     while run:
+        #clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+            #word genarating event
+            elif event.type == TIMER_GEN_WORD:
+                print("word")
+                player.current_word_list.current_word_list.append(words_library.generate_words())
+                print(player.current_word_list.word_to_string_list())
+
             elif event.type == pygame.KEYDOWN:
                 #player press return to submit word
                 if event.key == RETURN:
@@ -78,7 +90,6 @@ def main():
                 else:
                     player.pressed_word += pygame.key.name(event.key)
                 print(player.pressed_word)
-            
         redrawWindow(win)
 
 main()
