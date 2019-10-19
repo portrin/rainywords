@@ -6,7 +6,7 @@ class Word():
         self.word = word
         self.x = random.randint(100, resolution[1] - 100)
         self.y = 0
-        self.vel = 0.005
+        self.vel = 10
     
     def clear_words(self):
         pass

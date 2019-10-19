@@ -9,11 +9,13 @@ RETURN = 13
 SPACE = 32
 TIMER = 20
 TIMER_GEN_WORD = 21
+pygame.font.init()
 
 # test words
-words = ["hello", "int", "hi", "good", "read", "apple", "thanks", "tree", "sun", "moon", "nat"]
+words = ["hello", "int", "hi", "good", "read", "apple", "thanks", "tree", "sun", "moon", "nat", "yo"]
+#fonts_list = pygame.font.get_default_font()
+font = pygame.font.SysFont("comicsansmsttf", 32)
 
-font = pygame.font.get_default_font()
 
 win = pygame.display.set_mode((width, height))
 
@@ -31,9 +33,13 @@ class Player():
 
 
 
-
-def redrawWindow(win):
+def redrawWindow(win, player):
     win.fill((255,255,255))
+    for word in player.current_word_list.current_word_list:
+        word.update_falling()
+        word.vel += 1
+        text = font.render(word.word_to_string(), True, (0,0,255))
+        win.blit(text, (word.x, word.y))
     pygame.display.update()
 
 def menu():
@@ -68,9 +74,9 @@ def main():
                 pygame.quit()
             #word genarating event
             elif event.type == TIMER_GEN_WORD:
-                print("word")
                 player.current_word_list.current_word_list.append(words_library.generate_words())
-                print(player.current_word_list.word_to_string_list())
+                print(player.current_word_list.word_to_string_list()) # for debugging
+
 
             elif event.type == pygame.KEYDOWN:
                 #player press return to submit word
@@ -90,6 +96,6 @@ def main():
                 else:
                     player.pressed_word += pygame.key.name(event.key)
                 print(player.pressed_word)
-        redrawWindow(win)
+        redrawWindow(win, player)
 
 main()
