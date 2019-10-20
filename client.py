@@ -2,6 +2,7 @@ import pygame
 from os import path
 from word import Word, WordLibrary, CurrentWordList
 
+global DELAY
 width = 1200
 height = 800
 vel = 5
@@ -10,11 +11,12 @@ RETURN = 13
 SPACE = 32
 TIMER = 20
 TIMER_GEN_WORD = 21
-DELAY = 2000
+MISSED_WORD = 22
+DELAY = 2500
 pygame.font.init()
 
 # test words
-words = ["hello", "int", "hi", "good", "read", "apple", "thanks", "tree", "sun", "moon", "nat", "yo"]
+words = open("src/words.txt", 'r').read().split(" ")[:-1]
 #fonts_list = pygame.font.get_default_font()
 font = pygame.font.SysFont("comicsansmsttf", 32)
 
@@ -38,12 +40,15 @@ class Player():
 def redrawWindow(win, player, vel, DELAY):
     win.fill((255,255,255))
     for word in player.current_word_list.current_word_list:
-        word.update_falling()
-        word.vel += 1
         text = font.render(word.word_to_string(), True, (0,0,255))
+        word.vel += 0.5
         win.blit(text, (word.x, word.y))
-    vel += 0.5
-    DELAY += 100
+        word.update_falling()
+        if word.y > height:
+            pygame.event.post(pygame.event.Event(22, {"word": word.word}))
+            print(1)
+    vel += 0.4
+    DELAY -= 50
     pygame.display.update()
 
 def menu():
@@ -60,7 +65,7 @@ def menu():
 
 def main():
     run = True
-    menu()
+    #menu()
 
     #GAME SETUP
     #clock = pygame.time.Clock()
@@ -100,7 +105,10 @@ def main():
                     pass
                 else:
                     player.pressed_word += pygame.key.name(event.key)
-                print(player.pressed_word)
+                print(player.pressed_word) # for debugging
+
+            elif event.type == MISSED_WORD:
+                player.current_word_list.remove(event.word)
         redrawWindow(win, player, vel, DELAY)
 
 main()

@@ -45,6 +45,6 @@ class CurrentWordList():
     def remove(self, word):
         for x in self.current_word_list:
             if x.word == word:
-                x.clear_words()
+                #x.clear_words()
                 self.current_word_list.remove(x)
         return
