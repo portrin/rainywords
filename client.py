@@ -27,13 +27,15 @@ pygame.display.set_caption("Rainy Words")
 title = pygame.image.load("src/rainywords.png").convert_alpha()
 
 class Player():
-    def __init__(self, words, score):
+    def __init__(self, words, score, id = 1): # id comes from Agent object
         #track current words on screen.
         self.current_word_list = CurrentWordList()
         #track users scores
         self.score = 0
         #current word that typing
         self.pressed_word = ""
+        #player id
+        self.player_id = id
 
 
 
@@ -45,8 +47,7 @@ def redrawWindow(win, player, vel, DELAY):
         win.blit(text, (word.x, word.y))
         word.update_falling()
         if word.y > height:
-            pygame.event.post(pygame.event.Event(22, {"word": word.word}))
-            print(1)
+            pygame.event.post(pygame.event.Event(22, {"word": word.word})) # send misword event
     vel += 0.4
     DELAY -= 50
     pygame.display.update()
