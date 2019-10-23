@@ -16,11 +16,12 @@ DELAY = 2300
 player_id = 0
 pygame.font.init()
 pygame.mixer.init(44100, -16,2,2048)
+#fonts_list = pygame.font.get_default_font()
+font = pygame.font.SysFont("comicsansmsttf", 32)
+user_text = font.render('', True, (0,0,0))
 
 # test words
 words = open("src/words.txt", 'r').read().split(" ")[:-1]
-#fonts_list = pygame.font.get_default_font()
-font = pygame.font.SysFont("comicsansmsttf", 32)
 
 
 win = pygame.display.set_mode((width, height))
@@ -50,6 +51,8 @@ class Player():
 def redrawWindow(win, player, vel, DELAY):
     win.fill((255,255,255))
     win.blit(gameImage, (0,0))
+    user_text = font.render(player.pressed_word, True, (255,255,255)) # render interactive typing
+    win.blit(user_text, (10,750)) # interactive keypressed
     for word in player.current_word_list.current_word_list:
         text = font.render(word.word_to_string(), True, (255,255,255))
         word.vel += 0.006
@@ -149,6 +152,7 @@ def main():
                     pass
                 else:
                     player.pressed_word += pygame.key.name(event.key)
+                    #user_text = font.render(player.pressed_word, True, (255,255,255))
                 print(player.pressed_word) # for debugging
 
             elif event.type == MISSED_WORD:
