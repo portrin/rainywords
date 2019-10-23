@@ -121,7 +121,11 @@ def main():
 
             elif event.type == MISSED_WORD:
                 player.current_word_list.remove(event.word)
-                player.score -= len(event.word)
+                if player.score <= 0 or len(event.word) >= player.score:
+                    player.score = 0
+                else:
+                    player.score -= len(event.word)
+                print(player.score)
         redrawWindow(win, player, vel, DELAY)
 
 main()

@@ -18,7 +18,7 @@ class Agent():
     def send(self, data):
         try:
             sent = self.own_socket.send(pickle.dumps(data))
-            return self.receive() #wait for response after send a message
+            return sent
         except socket.error as error:
             print(error)
 

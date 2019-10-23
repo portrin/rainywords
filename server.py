@@ -17,10 +17,16 @@ server_socket.listen(1)
 print('server is waiting for connection')
 
 def thread_player(player_socket):
-    global number_of_player
+    agent = Agent(player_socket)
+    global number_of_player 
+    agent.send({"player_id": number_of_player})
     print(player_socket) # for debugging
+    print(number_of_player)
     while True:
-        print(number_of_player)
+        while number_of_player < 2:
+            agent.send(number_of_player)
+        agent.receive()
+        agnet.send(score)
     pass
 
 while True: #main server handler
