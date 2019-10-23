@@ -61,7 +61,8 @@ def redrawWindow(win, player, vel, DELAY):
     DELAY -= 50
     pygame.display.update()
 
-def welcome():
+def welcome(name):
+    text = font.render(name, True, (0,0,0))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -71,11 +72,15 @@ def welcome():
                     return
         win.fill((255,255,255))
         win.blit(welcomeImage, (0,0))
+        win.blit(text, (610,380))
         #win.blit(title, (350,200))
         pygame.display.update()
 
 def frontpage(): #enter name page
     name = ""
+    # pygame.mixer.music.load("src/bgm.ogg")
+    pygame.mixer.Channel(0).set_volume(0.7)
+    pygame.mixer.Channel(0).play(pygame.mixer.Sound("src/bgm.ogg"))
     while True:
         text = font.render(name, True, (0,0,0))
         win.blit(frontpageImage, (0,0))
@@ -86,7 +91,7 @@ def frontpage(): #enter name page
             #when user type their name
             if event.type == pygame.KEYDOWN:
                 if event.key == RETURN:
-                    return
+                    return name
                 elif event.key == BACKSPACE:
                     name = name[:-1]
                 else:
@@ -96,12 +101,12 @@ def frontpage(): #enter name page
 
 def main():
     run = True
-    frontpage()
+    name = frontpage()
     print(pygame.event.get())
-    welcome()
+    welcome(name)
 
     #GAME SETUP
-    #clock = pygame.time.Clock()
+    clock = pygame.time.Clock()
     player = Player(words, 0, player_id)
     #words list that can be generated.
     words_library = WordLibrary(words, vel)
@@ -118,7 +123,6 @@ def main():
             elif event.type == TIMER_GEN_WORD:
                 player.current_word_list.current_word_list.append(words_library.generate_words())
                 print(player.current_word_list.word_to_string_list()) # for debugging
-
 
             elif event.type == pygame.KEYDOWN:
                 #player press return to submit word
