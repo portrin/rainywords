@@ -7,13 +7,13 @@ width = 1200
 height = 800
 vel = 0.02
 BACKSPACE = 8
-ALPHABETS = 97,98
 RETURN = 13
 SPACE = 32
 TIMER = 20
 TIMER_GEN_WORD = 21
 MISSED_WORD = 22
 DELAY = 2300
+player_id = 0
 pygame.font.init()
 
 # test words
@@ -30,13 +30,15 @@ frontpageImage = pygame.image.load("src/frontpage.jpg").convert_alpha()
 gameImage = pygame.image.load("src/gamebg.jpg").convert_alpha()
 
 class Player():
-    def __init__(self, words, score, id = 1): # id comes from Agent object
+    def __init__(self, words, score, username='', id = 0): # id comes from Agent object
         #track current words on screen.
         self.current_word_list = CurrentWordList()
         #track users scores
         self.score = 0
         #current word that typing
         self.pressed_word = ""
+        #each player username
+        self.username = username
         #player id
         self.player_id = id
 
@@ -69,13 +71,31 @@ def menu():
         #win.blit(title, (350,200))
         pygame.display.update()
 
+def welcome():
+    name = ""
+    while True:
+        text = font.render(name, True, (0,0,0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            #when user type their name
+            if event.type == pygame.KEYDOWN:
+                if event.key == RETURN:
+                    return
+                elif event.key == BACKSPACE:
+                    name = name[:-1]
+                    win.blit(text, (0,0))
+                else:
+                    name += pygame.key.name(event.key)
+                    win.blit(text, (0,0))
+
 def main():
     run = True
     menu()
 
     #GAME SETUP
     #clock = pygame.time.Clock()
-    player = Player(words, score=0)
+    player = Player(words, 0, player_id)
     #words list that can be generated.
     words_library = WordLibrary(words, vel)
     #timer for generate word
@@ -91,17 +111,19 @@ def main():
             elif event.type == TIMER_GEN_WORD:
                 player.current_word_list.current_word_list.append(words_library.generate_words())
                 print(player.current_word_list.word_to_string_list()) # for debugging
+
+
             elif event.type == pygame.KEYDOWN:
                 #player press return to submit word
                 if event.key == RETURN:
                     #if what player types match
                     if player.pressed_word in player.current_word_list.word_to_string_list():
+                        #remove correct word from the list and clear word from screen
+                        player.current_word_list.remove(player.pressed_word)
                         #add correct sound
                         pygame.mixer.init(44100, -16,2,2048)
                         pygame.mixer.music.load("src/correctbgm.ogg")
                         pygame.mixer.music.play()
-                        #remove correct word from the list and clear word from screen
-                        player.current_word_list.remove(player.pressed_word)
                         player.score += len(player.pressed_word)
                         print(player.score)
                     else:
@@ -109,7 +131,8 @@ def main():
                         pygame.mixer.init(44100, -16,2,2048)
                         pygame.mixer.music.load("src/wrongbgm.ogg")
                         pygame.mixer.music.play()
-                    player.pressed_word = "" 
+                    player.pressed_word = ""
+                    
                 elif event.key == BACKSPACE:
                     #player press backspace
                     player.pressed_word = player.pressed_word[:-1]
