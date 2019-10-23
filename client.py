@@ -12,7 +12,7 @@ SPACE = 32
 TIMER = 20
 TIMER_GEN_WORD = 21
 MISSED_WORD = 22
-DELAY = 2500
+DELAY = 2300
 pygame.font.init()
 
 # test words
