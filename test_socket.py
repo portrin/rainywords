@@ -6,5 +6,6 @@ addr = "0.0.0.0"
 port = 5000
 agent = Agent(mysocket, addr, port)
 print(agent.connect())
-print(agent.send("test"))
+while True:
+    print(agent.receive())
 agent.own_socket.close()
