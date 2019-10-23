@@ -15,6 +15,7 @@ MISSED_WORD = 22
 DELAY = 2300
 player_id = 0
 pygame.font.init()
+pygame.mixer.init(44100, -16,2,2048)
 
 # test words
 words = open("src/words.txt", 'r').read().split(" ")[:-1]
@@ -28,6 +29,8 @@ pygame.display.set_caption("Rainy Words")
 ##title = pygame.image.load("src/rainywords.png").convert_alpha()
 frontpageImage = pygame.image.load("src/frontpage.jpg").convert_alpha()
 gameImage = pygame.image.load("src/gamebg.jpg").convert_alpha()
+welcomeImage = pygame.image.load("src/welcome.jpg").convert_alpha()
+
 
 class Player():
     def __init__(self, words, score, username='', id = 0): # id comes from Agent object
@@ -58,23 +61,25 @@ def redrawWindow(win, player, vel, DELAY):
     DELAY -= 50
     pygame.display.update()
 
-def menu():
+def welcome():
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_RETURN]:
-            return
+            if event.type == pygame.KEYDOWN:
+                if event.key == RETURN:
+                    return
         win.fill((255,255,255))
-        win.blit(frontpageImage, (0,0))
+        win.blit(welcomeImage, (0,0))
         #win.blit(title, (350,200))
         pygame.display.update()
 
-def welcome():
+def frontpage(): #enter name page
     name = ""
     while True:
         text = font.render(name, True, (0,0,0))
+        win.blit(frontpageImage, (0,0))
+        win.blit(text, (355,680))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -84,14 +89,16 @@ def welcome():
                     return
                 elif event.key == BACKSPACE:
                     name = name[:-1]
-                    win.blit(text, (0,0))
                 else:
-                    name += pygame.key.name(event.key)
-                    win.blit(text, (0,0))
+                    if len(name) < 30:
+                        name += pygame.key.name(event.key)
+        pygame.display.update()
 
 def main():
     run = True
-    menu()
+    frontpage()
+    print(pygame.event.get())
+    welcome()
 
     #GAME SETUP
     #clock = pygame.time.Clock()
@@ -121,14 +128,12 @@ def main():
                         #remove correct word from the list and clear word from screen
                         player.current_word_list.remove(player.pressed_word)
                         #add correct sound
-                        pygame.mixer.init(44100, -16,2,2048)
                         pygame.mixer.music.load("src/correctbgm.ogg")
                         pygame.mixer.music.play()
                         player.score += len(player.pressed_word)
                         print(player.score)
                     else:
                         #add wrong sound
-                        pygame.mixer.init(44100, -16,2,2048)
                         pygame.mixer.music.load("src/wrongbgm.ogg")
                         pygame.mixer.music.play()
                     player.pressed_word = ""
