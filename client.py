@@ -5,7 +5,7 @@ from word import Word, WordLibrary, CurrentWordList
 global DELAY
 width = 1200
 height = 800
-vel = 5
+vel = 0.05
 BACKSPACE = 8
 RETURN = 13
 SPACE = 32
@@ -43,7 +43,7 @@ def redrawWindow(win, player, vel, DELAY):
     win.fill((255,255,255))
     for word in player.current_word_list.current_word_list:
         text = font.render(word.word_to_string(), True, (0,0,255))
-        word.vel += 0.5
+        word.vel += 0.007
         win.blit(text, (word.x, word.y))
         word.update_falling()
         if word.y > height:

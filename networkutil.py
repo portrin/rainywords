@@ -9,7 +9,8 @@ class Agent():
 
     def connect(self):
         try:
-            return self.own_socket.connect((self.end_point_addr, self.end_point_port)) 
+            self.own_socket.connect((self.end_point_addr, self.end_point_port)) 
+            return self.receive()
         except:
             print("cannot connect to ", self.end_point_addr)
             pass
