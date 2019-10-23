@@ -5,7 +5,7 @@ class Word():
         # collection of random words from server to client
         self.word = word
         self.x = random.randint(100, resolution[1] - 100)
-        self.y = 0
+        self.y = 100
         self.vel = vel
     
     def clear_words(self):
