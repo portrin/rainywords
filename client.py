@@ -51,6 +51,9 @@ class Player():
 def redrawWindow(win, player, vel, DELAY):
     win.fill((255,255,255))
     win.blit(gameImage, (0,0))
+    print(player.username)
+    username = font.render(player.username, True, (0,0,0))
+    win.blit(username, (32,29)) # render username on screen
     user_text = font.render(player.pressed_word, True, (255,255,255)) # render interactive typing
     win.blit(user_text, (10,750)) # interactive keypressed
     for word in player.current_word_list.current_word_list:
@@ -110,7 +113,7 @@ def main():
 
     #GAME SETUP
     clock = pygame.time.Clock()
-    player = Player(words, 0, player_id)
+    player = Player(words, 0, name, player_id)
     #words list that can be generated.
     words_library = WordLibrary(words, vel)
     #timer for generate word
@@ -157,6 +160,9 @@ def main():
 
             elif event.type == MISSED_WORD:
                 player.current_word_list.remove(event.word)
+                #add wrong sound
+                pygame.mixer.music.load("src/wrongbgm.ogg")
+                pygame.mixer.music.play()
                 if player.score <= 0 or len(event.word) >= player.score:
                     player.score = 0
                 else:
