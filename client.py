@@ -5,14 +5,14 @@ from word import Word, WordLibrary, CurrentWordList
 global DELAY
 width = 1200
 height = 800
-vel = 0.05
+vel = 0.02
 BACKSPACE = 8
 RETURN = 13
 SPACE = 32
 TIMER = 20
 TIMER_GEN_WORD = 21
 MISSED_WORD = 22
-DELAY = 2500
+DELAY = 2300
 pygame.font.init()
 
 # test words
@@ -24,7 +24,9 @@ font = pygame.font.SysFont("comicsansmsttf", 32)
 win = pygame.display.set_mode((width, height))
 
 pygame.display.set_caption("Rainy Words")
-title = pygame.image.load("src/rainywords.png").convert_alpha()
+##title = pygame.image.load("src/rainywords.png").convert_alpha()
+frontpageImage = pygame.image.load("src/frontpage.jpg").convert_alpha()
+gameImage = pygame.image.load("src/gamebg.jpg").convert_alpha()
 
 class Player():
     def __init__(self, words, score, id = 1): # id comes from Agent object
@@ -41,9 +43,10 @@ class Player():
 
 def redrawWindow(win, player, vel, DELAY):
     win.fill((255,255,255))
+    win.blit(gameImage, (0,0))
     for word in player.current_word_list.current_word_list:
-        text = font.render(word.word_to_string(), True, (0,0,255))
-        word.vel += 0.007
+        text = font.render(word.word_to_string(), True, (255,255,255))
+        word.vel += 0.006
         win.blit(text, (word.x, word.y))
         word.update_falling()
         if word.y > height:
@@ -61,12 +64,13 @@ def menu():
         if keys[pygame.K_RETURN]:
             return
         win.fill((255,255,255))
-        win.blit(title, (350,200))
+        win.blit(frontpageImage, (0,0))
+        #win.blit(title, (350,200))
         pygame.display.update()
 
 def main():
     run = True
-    #menu()
+    menu()
 
     #GAME SETUP
     #clock = pygame.time.Clock()
