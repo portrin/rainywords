@@ -18,6 +18,8 @@ pygame.font.init()
 pygame.mixer.init(44100, -16,2,2048)
 #fonts_list = pygame.font.get_default_font()
 font = pygame.font.SysFont("comicsansmsttf", 32)
+fontname = pygame.font.SysFont("comicsansmsttf", 40)
+fontNameWelcome = pygame.font.SysFont("comicsansmsttf", 52)
 user_text = font.render('', True, (0,0,0))
 
 # test words
@@ -31,6 +33,8 @@ pygame.display.set_caption("Rainy Words")
 frontpageImage = pygame.image.load("src/frontpage.jpg").convert_alpha()
 gameImage = pygame.image.load("src/gamebg.jpg").convert_alpha()
 welcomeImage = pygame.image.load("src/welcome.jpg").convert_alpha()
+youwinImage = pygame.image.load("src/youwin.jpg").convert_alpha()
+youloseImage = pygame.image.load("src/youlose.jpg").convert_alpha()
 
 
 class Player():
@@ -53,8 +57,8 @@ def redrawWindow(win, player, vel, DELAY):
     win.blit(gameImage, (0,0))
     print(player.username)
     username = font.render(player.username, True, (0,0,0))
-    win.blit(username, (32,29)) # render username on screen
-    user_text = font.render(player.pressed_word, True, (0,0,0)) # render interactive typing
+    win.blit(username, (40,30)) # render username on screen
+    user_text = fontname.render(player.pressed_word, True, (0,0,0)) # render interactive typing
     win.blit(user_text, (530,730)) # interactive keypressed
     for word in player.current_word_list.current_word_list:
         text = font.render(word.word_to_string(), True, (255,255,255))
@@ -68,7 +72,7 @@ def redrawWindow(win, player, vel, DELAY):
     pygame.display.update()
 
 def welcome(name):
-    text = font.render(name, True, (0,0,0))
+    text = fontNameWelcome.render(name, True, (0,0,0))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -78,7 +82,7 @@ def welcome(name):
                     return
         win.fill((255,255,255))
         win.blit(welcomeImage, (0,0))
-        win.blit(text, (610,380))
+        win.blit(text, (625,359))
         #win.blit(title, (350,200))
         pygame.display.update()
 
@@ -88,9 +92,9 @@ def frontpage(): #enter name page
     pygame.mixer.Channel(0).set_volume(0.7)
     pygame.mixer.Channel(0).play(pygame.mixer.Sound("src/bgm.ogg"))
     while True:
-        text = font.render(name, True, (0,0,0))
+        text = fontname.render(name, True, (0,0,0))
         win.blit(frontpageImage, (0,0))
-        win.blit(text, (355,680))
+        win.blit(text, (360,675))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
