@@ -29,3 +29,10 @@ class Agent():
         except:
             print('could not receive any message')
             pass
+
+    def send_and_wait(self, data):
+        try:
+            sent = self.own_socket.send(pickle.dumps(data))
+            return self.receive()
+        except:
+            pass

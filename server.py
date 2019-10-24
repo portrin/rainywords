@@ -9,6 +9,7 @@ port = 5000
 number_of_player = 0
 player_id = 0
 score = [0,0] #storing players score
+username = ['', '']
 
 #define socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -26,9 +27,20 @@ def thread_player(player_socket):
     while True:
         agent.send({'player_id' : player_id,
                     'number_of_player' : number_of_player,
-                    'score' : score})
-        print(agent.receive())
-
+                    'score' : score,
+                    'username' : username})
+        message = agent.receive()
+        print(message)
+        print(score)
+        try:
+            if message['player_id'] == 1:
+                score[0] = message['score']
+                username[0] = message['username']
+            elif message['player_id'] == 2:
+                score[1] = message['score']
+                username[1] = message['username']
+        except:
+            pass
 while True: #main server handler
     print("before accept")
     player_socket, addr = server_socket.accept()

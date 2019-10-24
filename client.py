@@ -16,6 +16,8 @@ minute = 0
 second = 0
 minute_text = '0'
 second_text = '00'
+enemy_name = ''
+enemy_score = 0
 BACKSPACE = 8
 RETURN = 13
 SPACE = 32
@@ -25,6 +27,7 @@ TIMER_GEN_WORD = 21
 MISSED_WORD = 22
 DELAY = 2200
 player_id = 0
+score = 0
 pygame.font.init()
 pygame.display.init()
 pygame.mixer.init(44100, -16,2,2048)
@@ -65,12 +68,17 @@ class Player():
 
 
 
-def redrawWindow(win, player, vel, DELAY, time_text):
-    win.fill((255,255,255))
+def redrawWindow(win, player, vel, DELAY, time_text, enemy_name, enemy_score):
     win.blit(gameImage, (0,0))
     win.blit(time_text, (555,35))
-    username = font.render(player.username, True, (0,0,0))
-    win.blit(username, (40,30)) # render username on screen
+    username_text = font.render(player.username, True, (0,0,0))
+    win.blit(username_text, (40,30)) # render username on screen
+    score_text = font.render(str(player.score), True, (0,0,0))
+    win.blit(score_text, (140,30))
+    enemy_name_text = font.render(enemy_name, True, (0,0,0))
+    win.blit(enemy_name_text, (890,30)) #render enemy name
+    enemy_score_text = font.render(str(enemy_score), True, (0,0,0))
+    win.blit(enemy_score_text, (990,30)) #render enemy score
     user_text = fontname.render(player.pressed_word, True, (0,0,0)) # render interactive typing
     win.blit(user_text, (530,730)) # interactive keypressed
     for word in player.current_word_list.current_word_list:
@@ -128,6 +136,7 @@ def main():
     welcome(name)
     #GAME SETUP
     number_of_player = 0
+    enemy_name = ''
     time_text = font.render('3 : 00', True, (0,0,0))
     timeleft = COUNTDOWN # set variable to track timeleft
     clock = pygame.time.Clock()
@@ -136,11 +145,13 @@ def main():
     player.agent.connect() # connect player to the server
     ## waiting for another player
     while number_of_player < 2:
-        print("before receive")
         win.blit(waitingImage, (0,0))
         pygame.display.update()
         message = player.agent.receive()
-        player.agent.send('')
+        player.agent.send({'player_id' : player.id,
+                    'number_of_player' : number_of_player,
+                    'score' : score,
+                    'username' : player.username})
         print(message)
         try:
             player.id = message['player_id']
@@ -220,6 +231,17 @@ def main():
                 else:
                     player.score -= len(event.word)
                 print(player.score)
-        redrawWindow(win, player, vel, DELAY, time_text)
+        player.agent.send({'player_id' : player.id,
+                    'number_of_player' : number_of_player,
+                    'score' : player.score,
+                    'username' : player.username})
+        message = player.agent.receive()
+        if player.id == 1:
+            enemy_name = message['username'][1]
+            enemy_score = message['score'][1]
+        elif player.id == 2:
+            enemy_name = message['username'][0]
+            enemy_score = message['score'][0]
+        redrawWindow(win, player, vel, DELAY, time_text, enemy_name, enemy_score)
 
 main()
