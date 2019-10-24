@@ -1,9 +1,13 @@
 import pygame
 from os import path
 from word import Word, WordLibrary, CurrentWordList
+from networkutil import Agent
 
 global DELAY
-
+#for networking
+endpoint_addr = "0.0.0.0"
+endpoint_port = 5000
+#game parameter
 width = 1200
 height = 800
 vel = 0.02
@@ -14,7 +18,7 @@ second_text = '00'
 BACKSPACE = 8
 RETURN = 13
 SPACE = 32
-COUNTDOWN = 10 # countdown per game 180 seconds
+COUNTDOWN = 180 # countdown per game 180 seconds
 CLOCKTICK_EVENT = 20
 TIMER_GEN_WORD = 21
 MISSED_WORD = 22
@@ -22,35 +26,36 @@ DELAY = 2200
 player_id = 0
 pygame.font.init()
 pygame.mixer.init(44100, -16,2,2048)
-#fonts_list = pygame.font.get_default_font()
 font = pygame.font.SysFont("comicsansmsttf", 32)
 user_text = font.render('', True, (0,0,0))
 
 # test words
 words = open("src/words.txt", 'r').read().split(" ")[:-1]
-
-
+#setup game window
 win = pygame.display.set_mode((width, height))
 
+# load game materials
 pygame.display.set_caption("Rainy Words")
-##title = pygame.image.load("src/rainywords.png").convert_alpha()
 frontpageImage = pygame.image.load("src/frontpage.jpg").convert_alpha()
 gameImage = pygame.image.load("src/gamebg.jpg").convert_alpha()
 welcomeImage = pygame.image.load("src/welcome.jpg").convert_alpha()
+waitingImage = pygame.image.load("src/waiting.jpg").convert_alpha()
 
 
 class Player():
-    def __init__(self, words, score, username='', id = 0): # id comes from Agent object
+    def __init__(self, words, score, agent, username='', id = 0): # id comes from Agent object
         #track current words on screen.
         self.current_word_list = CurrentWordList()
         #track users scores
         self.score = 0
         #current word that typing
         self.pressed_word = ""
+        #player socket handler !!!
+        self.agent = agent
         #each player username
         self.username = username
         #player id
-        self.player_id = id
+        self.id = id
 
 
 
@@ -115,12 +120,29 @@ def main():
     run = True
     name = frontpage()
     welcome(name)
-
     #GAME SETUP
+    number_of_player = 0
     time_text = font.render('3 : 00', True, (0,0,0))
     timeleft = COUNTDOWN # set variable to track timeleft
     clock = pygame.time.Clock()
-    player = Player(words, 0, name, player_id)
+    agent = Agent(endpoint_addr, endpoint_port) # initialize player network handler
+    player = Player(words, 0, agent, name, 0)
+    player.agent.connect() # connect player to the server
+    ## waiting for another player
+    while number_of_player < 2:
+        print("before receive")
+        win.blit(waitingImage, (0,0))
+        pygame.display.update()
+        message = player.agent.receive()
+        player.agent.send('')
+        print(message)
+        try:
+            player.id = message['player_id']
+            number_of_player = message['number_of_player']
+        except:
+            pass
+        print(player.id)
+        print(number_of_player)
     #words list that can be generated.
     words_library = WordLibrary(words, vel)
     #timer for generate word
@@ -138,8 +160,7 @@ def main():
                 # do sth
                 timeleft -= 1
                 if timeleft == 0:
-                    #go to play again screen
-                    print('game over')
+                    #go to play again screen (call play again method)
                     pass
                 minute = timeleft // 60
                 second = timeleft - (minute * 60)

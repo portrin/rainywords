@@ -2,7 +2,7 @@ import socket
 import pickle
 
 class Agent():
-    def __init__(self, own_socket, end_point_addr='', end_point_port=5000):
+    def __init__(self, end_point_addr, end_point_port, own_socket=socket.socket(socket.AF_INET, socket.SOCK_STREAM)):
         self.end_point_addr = end_point_addr #for client socket endpoint
         self.end_point_port = end_point_port #for client socket endpoint
         self.own_socket = own_socket #pass own socket obj (both client and server)
@@ -10,7 +10,7 @@ class Agent():
     def connect(self):
         try:
             self.own_socket.connect((self.end_point_addr, self.end_point_port)) 
-            return self.receive()
+            #return self.receive()
         except:
             print("cannot connect to ", self.end_point_addr)
             pass
