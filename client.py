@@ -3,6 +3,7 @@ from os import path
 from word import Word, WordLibrary, CurrentWordList
 from networkutil import Agent
 
+pygame.init()
 global DELAY
 #for networking
 endpoint_addr = "0.0.0.0"
@@ -25,6 +26,7 @@ MISSED_WORD = 22
 DELAY = 2200
 player_id = 0
 pygame.font.init()
+pygame.display.init()
 pygame.mixer.init(44100, -16,2,2048)
 font = pygame.font.SysFont("comicsansmsttf", 32)
 fontname = pygame.font.SysFont("comicsansmsttf", 40)
@@ -41,12 +43,9 @@ pygame.display.set_caption("Rainy Words")
 frontpageImage = pygame.image.load("src/frontpage.jpg").convert_alpha()
 gameImage = pygame.image.load("src/gamebg.jpg").convert_alpha()
 welcomeImage = pygame.image.load("src/welcome.jpg").convert_alpha()
-<<<<<<< HEAD
 youwinImage = pygame.image.load("src/youwin.jpg").convert_alpha()
 youloseImage = pygame.image.load("src/youlose.jpg").convert_alpha()
-=======
 waitingImage = pygame.image.load("src/waiting.jpg").convert_alpha()
->>>>>>> 4798a6ebb61008b77e602f2b6c14ee00ca871ab8
 
 
 class Player():
