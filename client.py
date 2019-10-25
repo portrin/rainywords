@@ -21,13 +21,14 @@ enemy_score = 0
 BACKSPACE = 8
 RETURN = 13
 SPACE = 32
-COUNTDOWN = 180 # countdown per game 180 seconds
+COUNTDOWN = 10 # countdown per game 180 seconds
 CLOCKTICK_EVENT = 20
 TIMER_GEN_WORD = 21
 MISSED_WORD = 22
 DELAY = 2200
 player_id = 0
 score = 0
+lose = False
 pygame.font.init()
 pygame.display.init()
 pygame.mixer.init(44100, -16,2,2048)
@@ -107,6 +108,7 @@ def welcome(name):
         #win.blit(title, (350,200))
         pygame.display.update()
 
+
 def frontpage(): #enter name page
     name = ""
     # pygame.mixer.music.load("src/bgm.ogg")
@@ -145,13 +147,13 @@ def main():
     player.agent.connect() # connect player to the server
     ## waiting for another player
     while number_of_player < 2:
-        win.blit(waitingImage, (0,0))
-        pygame.display.update()
         message = player.agent.receive()
         player.agent.send({'player_id' : player.id,
                     'number_of_player' : number_of_player,
                     'score' : score,
-                    'username' : player.username})
+                    'username' : player.username,
+                    'status' : '',
+                    'reset' : False})
         print(message)
         try:
             player.id = message['player_id']
@@ -175,10 +177,17 @@ def main():
             # clock tick event (timer)
             elif event.type == CLOCKTICK_EVENT:
                 # do sth
-                timeleft -= 1
-                if timeleft == 0:
+                if timeleft > 0:
+                    timeleft -= 1
+                else:
+                    timeleft = 0
+                    player.agent.send({'player_id' : player.id,
+                                    'number_of_player' : number_of_player,
+                                    'score' : score,
+                                    'username' : player.username,
+                                    'status' : 'exit',
+                                    'reset' : False})
                     #go to play again screen (call play again method)
-                    pass
                 minute = timeleft // 60
                 second = timeleft - (minute * 60)
                 minute_text = str(minute)
@@ -234,7 +243,8 @@ def main():
         player.agent.send({'player_id' : player.id,
                     'number_of_player' : number_of_player,
                     'score' : player.score,
-                    'username' : player.username})
+                    'username' : player.username,
+                    'status' : ''})
         message = player.agent.receive()
         if player.id == 1:
             enemy_name = message['username'][1]
@@ -242,6 +252,9 @@ def main():
         elif player.id == 2:
             enemy_name = message['username'][0]
             enemy_score = message['score'][0]
+        if message['reset'] == True:
+            main()
+        print(message)
         redrawWindow(win, player, vel, DELAY, time_text, enemy_name, enemy_score)
 
 main()
