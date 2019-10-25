@@ -1,7 +1,6 @@
 import sys
 import socket 
 import _thread
-import pygame
 from networkutil import Agent
 
 server_ip = "0.0.0.0" #change to server ip later!
@@ -9,15 +8,15 @@ port = 5000
 
 width = 600
 height = 600
-pygame.font.init()
-pygame.display.init()
-font = pygame.font.SysFont("comicsansmsttf", 32)
+#pygame.font.init()
+#pygame.display.init()
+#font = pygame.font.SysFont("comicsansmsttf", 32)
 number_of_player = 0
 player_id = 0
 score = [0,0] #storing players score
 username = ['', '']
-window = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Rainy Words Server")
+#window = pygame.display.set_mode((width, height))
+#pygame.display.set_caption("Rainy Words Server")
 
 #define socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -63,14 +62,19 @@ def thread_player(player_socket):
         #             'reset' : False})
         
 while True: #main server handler
-    window.fill((255,255,255))
-    text = font.render('number of player ' + str(number_of_player) + ' username ' + str(username), True, (0,255,0))
-    window.blit(text, (200,200))
-    pygame.display.update()
+    #window.fill((255,255,255))
+    #text = font.render('number of player ' + str(number_of_player) + ' username ' + str(username), True, (0,255,0))
+    #window.blit(text, (200,200))
+    #pygame.display.update()
     player_socket, addr = server_socket.accept()
     print("connected to ", addr)
     number_of_player += 1
     _thread.start_new_thread(thread_player, (player_socket, )) #thread func, func(args)
+    if number_of_player > 1:
+        msg = input()
+        if msg == 'a':
+            # kill tread
+            sys.exit()
 
 
 
