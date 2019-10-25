@@ -6,7 +6,7 @@ from networkutil import Agent
 pygame.init()
 global DELAY
 #for networking
-endpoint_addr = "0.0.0.0"
+endpoint_addr = "172.20.10.3"
 endpoint_port = 5000
 #game parameter
 width = 1200
@@ -21,7 +21,7 @@ enemy_score = 0
 BACKSPACE = 8
 RETURN = 13
 SPACE = 32
-COUNTDOWN = 180 # countdown per game 180 seconds
+COUNTDOWN = 300 # countdown per game 180 seconds
 CLOCKTICK_EVENT = 20
 TIMER_GEN_WORD = 21
 MISSED_WORD = 22
@@ -137,7 +137,7 @@ def main():
     #GAME SETUP
     number_of_player = 0
     enemy_name = ''
-    time_text = font.render('3 : 00', True, (0,0,0))
+    time_text = font.render('5 : 00', True, (0,0,0))
     timeleft = COUNTDOWN # set variable to track timeleft
     clock = pygame.time.Clock()
     agent = Agent(endpoint_addr, endpoint_port) # initialize player network handler

@@ -1,0 +1,81 @@
+const express = require('express')
+// const bodyParser = require('body-parser')
+// const cors = require('cors')
+// const morgan = require('morgan')
+const path = require("path");
+const app = express();
+const port = 3000;
+
+// const mongoose = require('mongoose');
+// let Result = require("../models/result");
+
+// mongoose.connect('mongodb://localhost:27017/results');
+// var db = mongoose.connection;
+// db.on("error", console.error.bind(console, "connection error"));
+// db.once("open", function(callback){
+//   console.log("Connection Succeeded");
+// });
+
+// app.use(morgan('combined'))
+// app.use(bodyParser.json())
+// app.use(cors())
+
+// app.get('/results', (req, res) => {
+//     Result.find({}, 'username score', function (error, results) {
+//         if (error) { console.error(error); }
+//         res.send({
+//           results: results
+//         })
+//     }).sort({_id:-1})
+// })
+
+// app.post('/results', (req, res) => {
+//     let db = req.db;
+//     const { username, score } = req.body;
+//     let new_result = new Result({
+//       username: username,
+//       score: score
+//     })
+  
+//     new_result.save(function (error) {
+//       if (error) {
+//         console.log(error)
+//       }
+//       res.send({
+//         success: true,
+//         message: 'Result saved successfully!'
+//       })
+//     })
+// })
+
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.originalUrl}`);
+    next();
+  });
+  
+// app.use(express.urlencoded());
+  
+app.use(express.static("../client/dist"));
+  
+app.get("/login", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/src/views/Dashboard.vue"));
+  });
+  
+app.get("/logout", (req, res) => {
+    res.redirect(`/login?sessionStorage=clear`);
+  });
+  
+app.post("/admin-callback", async (req, res) => {
+    const { email, password } = req.body;
+    if (email === "gogobebe@gmail.com" && password === "gogobebe") {
+      console.log('==========='+ __dirname,)
+      res.sendFile(path.join(__dirname, "../client/src/views/Dashboard.vue"));
+    } else {
+      console.log("email or password is invalid.");
+    }
+});
+
+
+
+app.listen(process.env.PORT || 3000)
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
